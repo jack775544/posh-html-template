@@ -117,7 +117,7 @@ Function ConvertTo-HtmlString {
     )
     $TagStack += $Tag.TagName
     if ($ParentTagType -eq [TagType]::String) {
-        throw("The tag `"$($Tag.TagName)`" is not valid in the context of $ParentTagType. The only valid inner html elements are strings. Tag stack: ($($TagStack -join ' > '))")
+        throw("The tag `"$($Tag.TagName)`" is not valid in a $($TagStack[-2]) tag. The only valid inner html elements are strings. Tag stack: ($($TagStack -join ' > '))")
     }
     if ($ParentTagType -ne [TagType]::TopLevel) {
         if ($Tag.ParentTags -notcontains $ParentTagType) {
