@@ -133,6 +133,7 @@ Function ConvertTo-HtmlString {
             throw("The Tag `"$($Tag.TagName)`" is not valid in a tag of type $ParentTagType. It is only valid in ($($Tag.ParentTags -join ', ')). Tag stack: ($($TagStack -join ' > '))")
         }
     }
+    Write-Verbose "Stringifying a $($Tag.TagName) tag"
     $TagLine = "<$($Tag.TagName)$($Tag.Attributes.GetEnumerator() | ForEach-Object {' ' + $_.Key + '="' + $_.Value + '"'})$($Tag.Properties | ForEach-Object {" $_"})"
     if ($Tag.SelfClosing) {
         "$TagLine />"
