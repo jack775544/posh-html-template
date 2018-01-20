@@ -1,7 +1,7 @@
 function Script {
     [CmdletBinding()]
     Param (
-        [Parameter(Position = 0)]
+        [Parameter(Position = 0, ParameterSetName="InnerScript")]
         [scriptblock]
         $InnerHtml,
 
@@ -9,13 +9,23 @@ function Script {
         [hashtable]
         $Attributes = @{},
 
-        [Parameter()]
+        [Parameter(ParameterSetName="SourceScript")]
         [String]
         $Source
     )
-    if ($Source) {
-        $Attributes.Remove('src')
-        $Attributes.Add('src', $Source)
+    switch ($PSCmdlet.ParameterSetName) {
+        "InnerScript" { 
+            Tag "script" -Attributes $Attributes -TagType ([TagType]::String) -ParentTags ([TagType]::Body) $InnerHtml
+        }
+        "SourceScript" {
+            if ($Source) {
+                $Attributes.Remove('src')
+                $Attributes.Add('src', $Source)
+            } 
+            Tag "script" -Attributes $Attributes -TagType ([TagType]::String) -ParentTags ([TagType]::Body) {} -DisableEscaping
+        }
+        Default {
+            Tag "script" -Attributes $Attributes -TagType ([TagType]::String) -ParentTags ([TagType]::Body) {}
+        }
     }
-    Tag "script" -Attributes $Attributes -TagType ([TagType]::String) -ParentTags ([TagType]::Body) $InnerHtml -DisableEscaping
 }

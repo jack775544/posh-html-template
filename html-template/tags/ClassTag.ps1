@@ -5,9 +5,9 @@ function ClassTag {
         [String]
         $TagName,
 
-        [Parameter(Position = 1, Mandatory = $true)]
+        [Parameter(Position = 1)]
         [scriptblock]
-        $InnerHtml,
+        $InnerHtml = {},
 
         [Parameter()]
         [String[]]

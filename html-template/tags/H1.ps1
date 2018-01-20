@@ -3,7 +3,7 @@ function H1 {
     Param (
         [Parameter(Position = 0)]
         [scriptblock]
-        $InnerHtml,
+        $InnerHtml = {},
 
         [Parameter()]
         [hashtable]

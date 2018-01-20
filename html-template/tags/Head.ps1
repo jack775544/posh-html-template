@@ -3,7 +3,7 @@ Function Head {
     Param (
         [Parameter(Position = 0)]
         [scriptblock]
-        $InnerHtml
+        $InnerHtml = {}
     )
     Tag "head" -TagType ([TagType]::Head) -ParentTags ([TagType]::Html) $InnerHtml
 }

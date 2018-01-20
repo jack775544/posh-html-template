@@ -3,7 +3,7 @@ Function Html {
     Param (
         [Parameter(Position = 0)]
         [scriptblock]
-        $InnerHtml
+        $InnerHtml = {}
     )
     Tag "html" -TagType ([TagType]::Html) -ParentTags ([TagType]::TopLevel) $InnerHtml
 }

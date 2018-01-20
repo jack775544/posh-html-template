@@ -3,7 +3,7 @@ function Title {
     Param (
         [Parameter(Position = 0)]
         [scriptblock]
-        $InnerHtml,
+        $InnerHtml = {},
 
         [Parameter()]
         [hashtable]

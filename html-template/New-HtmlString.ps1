@@ -49,9 +49,9 @@ function Tag {
         [String]
         $TagName,
 
-        [Parameter(Position = 1, Mandatory = $true)]
+        [Parameter(Position = 1)]
         [scriptblock]
-        $InnerHtml,
+        $InnerHtml = {},
 
         [Parameter()]
         [hashtable]
@@ -84,6 +84,9 @@ function Tag {
     )
     Write-Verbose "Creating tag of type $TagName with the attrs $($Attributes.GetEnumerator() | ForEach-Object { $_.Key +": " + $_.Value })"
     $Inner = & $InnerHtml
+    if ($Inner -eq $null) {
+        $Inner = ""
+    }
     [HtmlTag]@{
         TagName = $TagName
         InnerHtml = $Inner
@@ -101,11 +104,17 @@ Function Invoke-HtmlTemplate {
     Param(
         [scriptblock]$Html
     )
-    Write-Verbose "Constucting HTML Template"
-    $Dom = & $Html
-    Write-Verbose "Constructing Html String"
-    $Type = [TagType]::TopLevel
-    ConvertTo-HtmlString -Tag $Dom -ParentTagType $Type -TagStack @()
+    try {
+        Write-Verbose "Constucting HTML Template"
+        $Dom = & $Html
+        Write-Verbose "Constructing Html String"
+        $Type = [TagType]::TopLevel
+        $Out = ConvertTo-HtmlString -Tag $Dom -ParentTagType $Type -TagStack @()
+    } catch {
+        Write-Error $_
+        return
+    }
+    $Out
 }
 
 Function ConvertTo-HtmlString {
