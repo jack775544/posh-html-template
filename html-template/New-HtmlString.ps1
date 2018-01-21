@@ -94,7 +94,7 @@ function Tag {
         Properties = $Properties
         SelfClosing = $SelfClosing
         TagType = $TagType
-        Custom = $Custom
+        Custom = $CustomTag
         ParentTags = $ParentTags
         DisableEscaping = $DisableEscaping
     }
@@ -131,7 +131,7 @@ Function ConvertTo-HtmlString {
                 if ($ParentTagType -eq [TagType]::String) {
                     throw("The tag `"$($Tag.TagName)`" is not valid in a $($TagStack[-2]) tag. The only valid inner html elements are strings. Tag stack: ($($TagStack -join ' > '))")
                 }
-                if ($ParentTagType -ne [TagType]::TopLevel) {
+                if (($ParentTagType -ne [TagType]::TopLevel) -and ($Tag.Custom -ne $true)) {
                     if ($Tag.ParentTags -notcontains $ParentTagType) {
                         throw("The Tag `"$($Tag.TagName)`" is not valid in a tag of type $ParentTagType. It is only valid in ($($Tag.ParentTags -join ', ')). Tag stack: ($($TagStack -join ' > '))")
                     }

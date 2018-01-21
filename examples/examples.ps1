@@ -134,3 +134,21 @@ New-HtmlString {
         }
     }
 } -Verbose
+
+
+
+
+
+
+
+
+
+
+# Example 6
+New-HtmlString {
+    Div {
+        Tag "thing" -CustomTag {
+            "Hey"
+        }
+    }
+} -Verbose
