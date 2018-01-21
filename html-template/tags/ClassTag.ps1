@@ -35,7 +35,11 @@ function ClassTag {
 
         [Parameter()]
         [switch]
-        $SelfClosing = $false
+        $SelfClosing = $false,
+
+        [Parameter()]
+        [switch]
+        $DisableEscaping = $false
     )
     if ($Class.Length -ne 0) {
         $Attributes.Remove('class')
@@ -45,9 +49,14 @@ function ClassTag {
         $Attributes.Remove('id')
         $Attributes.Add('id', $Id)
     }
-    if ($SelfClosing) {
-        Tag $TagName -Attributes $Attributes -TagType $TagType -ParentTags $ParentTags $InnerHtml -SelfClosing
-    } else {
-        Tag $TagName -Attributes $Attributes -TagType $TagType -ParentTags $ParentTags $InnerHtml
+    $TagArgs = @{
+        TagName = $TagName
+        Attributes = $Attributes
+        TagType = $TagType
+        ParentTags = $ParentTags
+        InnerHtml = $InnerHtml
+        SelfClosing = $SelfClosing
+        DisableEscaping = $DisableEscaping
     }
+    Tag @TagArgs
 }
