@@ -8,9 +8,9 @@
             "type": "PowerShell",
             "request": "launch",
             "name": "PowerShell Launch Debug File",
-            "script": "${workspaceRoot}/debug.ps1",
+            "script": "${workspaceRoot}/examples/examples.ps1",
             "args": [],
-            "cwd": "${workspaceRoot}"
+            "cwd": "${workspaceRoot}/examples"
         }
     ]
 }
