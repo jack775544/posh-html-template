@@ -9,7 +9,7 @@ function Script {
         [hashtable]
         $Attributes = @{},
 
-        [Parameter(ParameterSetName="SourceScript")]
+        [Parameter(Position = 0, ParameterSetName="SourceScript")]
         [String]
         $Source
     )
@@ -21,7 +21,7 @@ function Script {
             if ($Source) {
                 $Attributes.Remove('src')
                 $Attributes.Add('src', $Source)
-            } 
+            }
             Tag "script" -Attributes $Attributes -TagType ([TagType]::String) -ParentTags ([TagType]::Body) {} -DisableEscaping
         }
         Default {
