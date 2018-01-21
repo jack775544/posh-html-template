@@ -108,8 +108,7 @@ Function Invoke-HtmlTemplate {
         Write-Verbose "Constucting HTML Template"
         $Dom = & $Html
         Write-Verbose "Constructing Html String"
-        $Type = [TagType]::TopLevel
-        $Out = ConvertTo-HtmlString -Tags $Dom -ParentTagType $Type -TagStack @()
+        $Out = ConvertTo-HtmlString $Dom -ParentTagType ([TagType]::TopLevel)
     } catch {
         Write-Error $_
         return
@@ -120,40 +119,51 @@ Function Invoke-HtmlTemplate {
 Function ConvertTo-HtmlString {
     [CmdletBinding()]
     Param(
-        [Parameter(Mandatory = $true, Position = 0)][HtmlTag[]]$Tags,
+        [Parameter(Mandatory = $true, Position = 0, ParameterSetName="TagClass")][HtmlTag[]]$Tags,
+        [Parameter(Mandatory = $true, Position = 0, ParameterSetName="StringClass")][string[]]$StringTags,
         [Parameter(Mandatory = $true, Position = 1)][TagType]$ParentTagType,
-        [Parameter(Position = 2)][string[]]$TagStack
+        [Parameter(Position = 2)][string[]]$TagStack = @()
     )
-    foreach ($Tag in $Tags) {
-        $TagStack += $Tag.TagName
-        if ($ParentTagType -eq [TagType]::String) {
-            throw("The tag `"$($Tag.TagName)`" is not valid in a $($TagStack[-2]) tag. The only valid inner html elements are strings. Tag stack: ($($TagStack -join ' > '))")
-        }
-        if ($ParentTagType -ne [TagType]::TopLevel) {
-            if ($Tag.ParentTags -notcontains $ParentTagType) {
-                throw("The Tag `"$($Tag.TagName)`" is not valid in a tag of type $ParentTagType. It is only valid in ($($Tag.ParentTags -join ', ')). Tag stack: ($($TagStack -join ' > '))")
-            }
-        }
-        Write-Verbose "Stringifying a $($Tag.TagName) tag"
-        $TagLine = "<$($Tag.TagName)$($Tag.Attributes.GetEnumerator() | ForEach-Object {' ' + $_.Key + '="' + $_.Value + '"'})$($Tag.Properties | ForEach-Object {" $_"})"
-        if ($Tag.SelfClosing) {
-            "$TagLine />"
-        } else {
-            "$TagLine>`n"
-            $Tag.InnerHtml | ForEach-Object {
-                if ($_ -is [HtmlTag]) {
-                    "    $(ConvertTo-HtmlString $_ $Tag.TagType $TagStack)`n"
-                } else {
-                    if ($Tag.DisableEscaping) {
-                        "    $($_.ToString())"
-                    } else {
-                        "    $(Escape-String -String ($_.ToString()))`n"
+    switch ($PSCmdlet.ParameterSetName) {
+        "TagClass" {
+            foreach ($Tag in $Tags) {
+                $TagStack += $Tag.TagName
+                if ($ParentTagType -eq [TagType]::String) {
+                    throw("The tag `"$($Tag.TagName)`" is not valid in a $($TagStack[-2]) tag. The only valid inner html elements are strings. Tag stack: ($($TagStack -join ' > '))")
+                }
+                if ($ParentTagType -ne [TagType]::TopLevel) {
+                    if ($Tag.ParentTags -notcontains $ParentTagType) {
+                        throw("The Tag `"$($Tag.TagName)`" is not valid in a tag of type $ParentTagType. It is only valid in ($($Tag.ParentTags -join ', ')). Tag stack: ($($TagStack -join ' > '))")
                     }
                 }
+                Write-Verbose "Stringifying a $($Tag.TagName) tag"
+                $TagLine = "<$($Tag.TagName)$($Tag.Attributes.GetEnumerator() | ForEach-Object {' ' + $_.Key + '="' + $_.Value + '"'})$($Tag.Properties | ForEach-Object {" $_"})"
+                if ($Tag.SelfClosing) {
+                    "$TagLine />"
+                } else {
+                    "$TagLine>`n"
+                    $Tag.InnerHtml | ForEach-Object {
+                        if ($_ -is [HtmlTag]) {
+                            "    $(ConvertTo-HtmlString $_ $Tag.TagType $TagStack)`n"
+                        } else {
+                            if ($Tag.DisableEscaping) {
+                                "    $($_.ToString())"
+                            } else {
+                                "    $(Escape-String -String ($_.ToString()))`n"
+                            }
+                        }
+                    }
+                    "</$($Tag.TagName)>`n"
+                }
             }
-            "</$($Tag.TagName)>`n"
+        }
+        "StringClass" {
+            foreach ($Tag in $StringTags) {
+                Escape-String -String ($Tag.ToString())
+            }
         }
     }
+    
 }
 
 Function Escape-String {
