@@ -30,17 +30,44 @@ New-HtmlString {
     }
 } -Verbose
 
+
+
+
+
+
+
+
+
+
 # Example 2
 New-HtmlString {
     "Hello world"
     "Goodbye" | ConvertTo-Xml -As String
 } -Verbose
 
+
+
+
+
+
+
+
+
+
 # Example 3
 New-HtmlString {
     Span {"Hello world"}
     Span {"Goodbye"}
 } -Verbose
+
+
+
+
+
+
+
+
+
 
 # Example 4
 $MyHeader = {
@@ -80,9 +107,19 @@ New-HtmlString {
             & $MySpans
             & $MyScript
             Br
+            Script -Source "https://code.jquery.com/jquery-2.2.4.min.js"
         }
     }
 } -Verbose
+
+
+
+
+
+
+
+
+
 
 # Example 5
 New-HtmlString {
