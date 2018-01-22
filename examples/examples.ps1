@@ -1,5 +1,5 @@
 Remove-Module -ErrorAction SilentlyContinue html-template
-Import-Module "$PSScriptRoot\..\html-template.psd1"
+Import-Module "$PSScriptRoot/../html-template.psd1"
 
 # Example 1
 New-HtmlString {
@@ -129,7 +129,7 @@ New-HtmlString {
         }
         Body {
             Markdown {
-                cat "$PSScriptRoot\..\README.md"
+                cat "$PSScriptRoot/../README.md"
             }
         }
     }
