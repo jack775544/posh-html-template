@@ -70,29 +70,23 @@ New-HtmlString {
 
 
 # Example 4
-$MyHeader = {
-    H1 -Id "Title" {
-        "My First Page"
+$MyHeader = H1 -Id "Title" {
+    "My First Page"
+}
+$MyDiv = Div -class 'hello' {
+    "My First paragraph"
+    "<span> and & and </span>"
+    Div {
+        "Hello Again"
     }
 }
-$MyDiv = {
-    Div -class 'hello' {
-        "My First paragraph"
-        "<span> and & and </span>"
-        Div {
-            "Hello Again"
-        }
-    }
+[System.Collections.ArrayList]$MySpans = @()
+for ($i = 0; $i -lt 4; $i++) {
+    $Span = Span {"This is span number $i"}
+    $MySpans.Add($Span) > $null
 }
-$MySpans = {
-    for ($i = 0; $i -lt 4; $i++) {
-        Span {"This is span number $i"}
-    }
-}
-$MyScript = {
-    Script {
-        "alert('Hello world')"
-    }
+$MyScript = Script {
+    "alert('Hello world')"
 }
 New-HtmlString {
     Html {
@@ -102,10 +96,10 @@ New-HtmlString {
             }
         }
         Body {
-            & $MyHeader
-            & $MyDiv
-            & $MySpans
-            & $MyScript
+            $MyHeader
+            $MyDiv
+            $MySpans
+            $MyScript
             Br
             Script -Source "https://code.jquery.com/jquery-2.2.4.min.js"
         }

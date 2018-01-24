@@ -5,6 +5,5 @@ Function New-HtmlString {
     Param(
         [Parameter(Mandatory=$true, Position=0)][scriptblock]$Html
     )
-    $ErrorActionPreference = "Stop"
-    Invoke-HtmlTemplate -Html $Html
+    Invoke-HtmlTemplate -Html $Html -ErrorAction "Stop"
 }

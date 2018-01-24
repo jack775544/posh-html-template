@@ -101,8 +101,9 @@ function Tag {
 }
 
 Function Invoke-HtmlTemplate {
+    [CmdletBinding()]
     Param(
-        [scriptblock]$Html
+        [Parameter()][scriptblock]$Html
     )
     try {
         Write-Verbose "Constucting HTML Template"
